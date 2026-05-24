@@ -183,7 +183,7 @@ export default function FiltersPage() {
                     cursor: 'pointer',
                   }}
                 >
-                  Generate Filter ���
+                  Generate Filter &rarr;
                 </motion.button>
               </div>
 

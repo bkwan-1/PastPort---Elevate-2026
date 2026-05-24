@@ -1,6 +1,6 @@
 'use client'
 import 'leaflet/dist/leaflet.css'
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import L from 'leaflet'
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
 import { motion } from 'framer-motion'
@@ -25,16 +25,19 @@ const trips: Trip[] = [
 
 const YEARS = ['All', '2024', '2025', '2026']
 
-const markerIcon = L.divIcon({
-  html: `<div style="width:20px;height:20px;border-radius:50%;background:#C4862A;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(196,134,42,0.5)"><div style="width:6px;height:6px;border-radius:50%;background:white;"></div></div>`,
-  className: '',
-  iconSize: [20, 20] as [number, number],
-  iconAnchor: [10, 10] as [number, number],
-  popupAnchor: [0, -14] as [number, number],
-})
-
 export default function MapClient() {
   const [activeYear, setActiveYear] = useState('All')
+
+  const markerIcon = useMemo(() => {
+    if (typeof window === 'undefined') return undefined
+    return L.divIcon({
+      html: `<div style="width:20px;height:20px;border-radius:50%;background:#C4862A;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(196,134,42,0.5)"><div style="width:6px;height:6px;border-radius:50%;background:white;"></div></div>`,
+      className: '',
+      iconSize: [20, 20] as [number, number],
+      iconAnchor: [10, 10] as [number, number],
+      popupAnchor: [0, -14] as [number, number],
+    })
+  }, [])
   const filtered = activeYear === 'All' ? trips : trips.filter(t => t.year === parseInt(activeYear))
 
   return (
