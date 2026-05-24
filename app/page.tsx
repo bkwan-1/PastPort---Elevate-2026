@@ -1,65 +1,240 @@
-import Image from "next/image";
+'use client'
+import Image from 'next/image'
+import { motion } from 'framer-motion'
+import { ChevronDown, FolderOpen, Sparkles, Globe } from 'lucide-react'
+import PageWrapper from '@/components/PageWrapper'
+
+const cards = [
+  {
+    Icon: FolderOpen,
+    title: 'Organize',
+    body: 'Every photo finds its place. Albums are built automatically by trip, sorted by date and location.',
+  },
+  {
+    Icon: Sparkles,
+    title: 'Beautify',
+    body: 'AI-powered enhancements bring out golden hours, soften shadows, and restore faded memories.',
+  },
+  {
+    Icon: Globe,
+    title: 'Remember',
+    body: 'Replay your journeys on an interactive map or let PastPort turn them into a cinematic movie.',
+  },
+]
+
+const containerVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12 } },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' as const } },
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
+    <PageWrapper>
+      {/* ── Section 1: Hero ── */}
+      <section style={{ height: '100vh', position: 'relative', overflow: 'hidden' }}>
         <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
+          fill
+          src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1600"
+          alt="Mountain landscape"
+          className="brightness-90"
+          style={{ objectFit: 'cover' }}
           priority
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+
+        {/* bottom-60% warm gradient fade */}
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            background: 'linear-gradient(to top, #FAFAF8 0%, transparent 60%)',
+          }}
+        />
+
+        {/* centered content */}
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center pt-32 px-6 text-center">
+          <h1
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(44px, 7vw, 72px)',
+              color: 'var(--text-primary)',
+              lineHeight: 1.1,
+              letterSpacing: '-0.02em',
+            }}
+          >
+            A travel memory studio
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+
+          <p
+            className="mt-3"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '20px',
+              color: 'var(--text-secondary)',
+            }}
+          >
+            Where trips become stories.
+          </p>
+
+          <p
+            className="mt-4 max-w-lg"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '16px',
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+            }}
+          >
+            PastPort organizes your travel photos, enhances them with AI, and transforms group trips
+            into cinematic memories — forever.
+          </p>
+
+          <div className="flex flex-wrap gap-4 mt-8 justify-center">
+            <motion.button
+              whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(196,134,42,0.35)' }}
+              whileTap={{ scale: 0.97 }}
+              className="px-8 py-3 text-sm font-medium text-white"
+              style={{
+                background: 'var(--accent)',
+                borderRadius: 'var(--radius-pill)',
+                fontFamily: 'var(--font-body)',
+              }}
             >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
+              Get Started Free
+            </motion.button>
+
+            <motion.button
+              whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(196,134,42,0.15)' }}
+              whileTap={{ scale: 0.97 }}
+              className="px-8 py-3 text-sm font-medium"
+              style={{
+                border: '1.5px solid var(--accent)',
+                color: 'var(--accent)',
+                borderRadius: 'var(--radius-pill)',
+                fontFamily: 'var(--font-body)',
+                background: 'transparent',
+              }}
             >
-              Learning
-            </a>{" "}
-            center.
+              See How It Works
+            </motion.button>
+          </div>
+        </div>
+
+        {/* bouncing scroll arrow */}
+        <motion.div
+          className="absolute bottom-8 left-1/2 z-10"
+          style={{ x: '-50%' }}
+          animate={{ y: [0, 6, 0] }}
+          transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }}
+        >
+          <ChevronDown size={28} color="var(--accent)" />
+        </motion.div>
+      </section>
+
+      {/* ── Section 2: Value Props ── */}
+      <section className="py-24">
+        <div className="max-w-6xl mx-auto px-6">
+          <p
+            className="text-center mb-12"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '12px',
+              letterSpacing: '0.12em',
+              textTransform: 'uppercase',
+              color: 'var(--accent)',
+            }}
+          >
+            Why PastPort
+          </p>
+
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-60px' }}
+          >
+            {cards.map(({ Icon, title, body }) => (
+              <motion.div
+                key={title}
+                variants={itemVariants}
+                className="bg-white p-8"
+                style={{
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius-card)',
+                  boxShadow: 'var(--shadow-sm)',
+                }}
+              >
+                <Icon size={28} color="var(--accent)" />
+                <h3
+                  className="mt-4"
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontSize: '24px',
+                    color: 'var(--text-primary)',
+                    lineHeight: 1.2,
+                  }}
+                >
+                  {title}
+                </h3>
+                <p
+                  className="mt-2"
+                  style={{
+                    fontFamily: 'var(--font-body)',
+                    fontSize: '15px',
+                    color: 'var(--text-secondary)',
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {body}
+                </p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Section 3: Quote ── */}
+      <section className="py-20">
+        <div className="max-w-2xl mx-auto px-6 text-center">
+          <div
+            style={{
+              width: 48,
+              height: 2,
+              background: 'var(--accent)',
+              margin: '0 auto 2rem',
+            }}
+          />
+
+          <blockquote
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(22px, 3vw, 32px)',
+              color: 'var(--text-primary)',
+              lineHeight: 1.4,
+            }}
+          >
+            &ldquo;Finally, a place where my travel memories actually feel like memories.&rdquo;
+          </blockquote>
+
+          <p
+            className="mt-4"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: '14px',
+              color: 'var(--text-secondary)',
+            }}
+          >
+            — Sofia R., travelled to 14 countries
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
+      </section>
+    </PageWrapper>
+  )
 }
