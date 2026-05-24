@@ -1,0 +1,538 @@
+'use client'
+import { useState, useEffect } from 'react'
+import Image from 'next/image'
+import { motion, AnimatePresence } from 'framer-motion'
+import { Clapperboard, Lock, Play } from 'lucide-react'
+import PageWrapper from '@/components/PageWrapper'
+
+const GENERIC = [
+  'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400',
+  'https://images.unsplash.com/photo-1527631746610-bca00a040d60?w=400',
+  'https://images.unsplash.com/photo-1500835556837-99ac94a94552?w=400',
+  'https://images.unsplash.com/photo-1488085061387-422e29b40080?w=400',
+]
+
+const DURATIONS = ['60 seconds', '2 minutes', '5 minutes']
+const VIBES = ['Cinematic & Epic', 'Indie & Warm', 'Upbeat & Fun', 'Soft & Nostalgic']
+const GEN_MESSAGES = [
+  'Analyzing your best moments',
+  'Matching your music vibe',
+  'Crafting your story arc',
+  'Almost ready...',
+]
+const DOT_X = [5, 12, 20, 28, 35, 43, 52, 60, 68, 76, 84, 92]
+
+const GRAIN_BG =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E\")"
+
+type Phase = 'idle' | 'questions' | 'generating' | 'complete'
+
+function PillButton({
+  children,
+  active,
+  onClick,
+}: {
+  children: React.ReactNode
+  active: boolean
+  onClick: () => void
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        fontFamily: 'var(--font-body)',
+        fontSize: 14,
+        fontWeight: 500,
+        padding: '8px 18px',
+        borderRadius: 'var(--radius-pill)',
+        cursor: 'pointer',
+        border: `1.5px solid ${active ? 'var(--accent)' : 'var(--border)'}`,
+        background: active ? 'var(--accent)' : 'white',
+        color: active ? 'white' : 'var(--text-secondary)',
+        transition: 'all 0.15s',
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+export default function MoviePage() {
+  const [phase, setPhase] = useState<Phase>('idle')
+  const [step, setStep] = useState(1)
+  const [durAnswer, setDurAnswer] = useState('')
+  const [vibeAnswer, setVibeAnswer] = useState('')
+  const [photoAnswer, setPhotoAnswer] = useState<number | null>(null)
+  const [msgIdx, setMsgIdx] = useState(0)
+
+  useEffect(() => {
+    if (phase !== 'generating') return
+    const interval = setInterval(() => setMsgIdx(i => (i + 1) % GEN_MESSAGES.length), 1500)
+    return () => clearInterval(interval)
+  }, [phase])
+
+  useEffect(() => {
+    if (phase !== 'generating') return
+    const timeout = setTimeout(() => setPhase('complete'), 5500)
+    return () => clearTimeout(timeout)
+  }, [phase])
+
+  const nextDisabled =
+    step === 1 ? !durAnswer : step === 2 ? !vibeAnswer : photoAnswer === null
+
+  return (
+    <PageWrapper>
+      {/* ── IDLE ── */}
+      {phase === 'idle' && (
+        <div className="flex flex-col items-center text-center py-32 px-6 max-w-xl mx-auto">
+          <Clapperboard size={40} color="var(--accent)" style={{ marginBottom: 24 }} />
+
+          <h1
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+              fontSize: 'clamp(36px, 5vw, 56px)',
+              color: 'var(--text-primary)',
+              lineHeight: 1.15,
+            }}
+          >
+            Turn Your Trip Into a Film
+          </h1>
+
+          <p
+            className="max-w-md mt-4"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 18,
+              color: 'var(--text-secondary)',
+              lineHeight: 1.6,
+            }}
+          >
+            When your group is ready, PastPort weaves every photo and video into a cinematic memory
+            — forever sealed.
+          </p>
+
+          <motion.button
+            whileHover={{ y: -2, boxShadow: '0 4px 20px rgba(196,134,42,0.4)' }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => setPhase('questions')}
+            className="mt-10"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 18,
+              fontWeight: 500,
+              padding: '16px 40px',
+              background: 'var(--accent)',
+              color: 'white',
+              borderRadius: 'var(--radius-pill)',
+              border: 'none',
+              cursor: 'pointer',
+            }}
+          >
+            End Trip &amp; Create Movie
+          </motion.button>
+
+          <p
+            className="mt-5 flex items-center gap-1.5"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              color: 'var(--text-secondary)',
+            }}
+          >
+            <Lock size={13} />
+            This action is permanent. Once ended, no new media can be added.
+          </p>
+        </div>
+      )}
+
+      {/* ── QUESTIONS ── */}
+      {phase === 'questions' && (
+        <div className="py-24 px-6 max-w-md mx-auto">
+          {/* Progress bar */}
+          <div
+            style={{
+              height: 3,
+              background: 'var(--border)',
+              borderRadius: 99,
+              marginBottom: 24,
+              overflow: 'hidden',
+            }}
+          >
+            <motion.div
+              style={{ height: '100%', background: 'var(--accent)', borderRadius: 99 }}
+              animate={{ width: `${(step / 3) * 100}%` }}
+              transition={{ duration: 0.4, ease: 'easeOut' as const }}
+            />
+          </div>
+
+          <p
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 13,
+              color: 'var(--text-secondary)',
+              marginBottom: 24,
+            }}
+          >
+            Step {step} of 3
+          </p>
+
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={step}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25, ease: 'easeOut' as const }}
+            >
+              {step === 1 && (
+                <>
+                  <h2
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontStyle: 'italic',
+                      fontSize: 32,
+                      color: 'var(--text-primary)',
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    How long should your movie be?
+                  </h2>
+                  <div className="flex flex-wrap gap-3 mt-6">
+                    {DURATIONS.map(d => (
+                      <PillButton key={d} active={durAnswer === d} onClick={() => setDurAnswer(d)}>
+                        {d}
+                      </PillButton>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {step === 2 && (
+                <>
+                  <h2
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontStyle: 'italic',
+                      fontSize: 32,
+                      color: 'var(--text-primary)',
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Choose a music vibe:
+                  </h2>
+                  <div className="flex flex-wrap gap-3 mt-6">
+                    {VIBES.map(v => (
+                      <PillButton key={v} active={vibeAnswer === v} onClick={() => setVibeAnswer(v)}>
+                        {v}
+                      </PillButton>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {step === 3 && (
+                <>
+                  <h2
+                    style={{
+                      fontFamily: 'var(--font-display)',
+                      fontStyle: 'italic',
+                      fontSize: 32,
+                      color: 'var(--text-primary)',
+                      lineHeight: 1.2,
+                    }}
+                  >
+                    Pick your favourite moment:
+                  </h2>
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    {GENERIC.map((src, i) => (
+                      <div
+                        key={i}
+                        onClick={() => setPhotoAnswer(i)}
+                        style={{
+                          position: 'relative',
+                          paddingBottom: '70%',
+                          borderRadius: 10,
+                          overflow: 'hidden',
+                          cursor: 'pointer',
+                          outline:
+                            photoAnswer === i
+                              ? '3px solid var(--accent)'
+                              : '3px solid transparent',
+                          outlineOffset: 2,
+                          transition: 'outline-color 0.15s',
+                        }}
+                      >
+                        <Image
+                          fill
+                          src={src}
+                          alt={`Moment ${i + 1}`}
+                          style={{ objectFit: 'cover' }}
+                          sizes="(max-width: 768px) 50vw, 200px"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
+            </motion.div>
+          </AnimatePresence>
+
+          <motion.button
+            whileHover={nextDisabled ? {} : { y: -2, boxShadow: '0 4px 16px rgba(196,134,42,0.35)' }}
+            whileTap={nextDisabled ? {} : { scale: 0.97 }}
+            disabled={nextDisabled}
+            onClick={() => (step < 3 ? setStep(s => s + 1) : setPhase('generating'))}
+            className="w-full mt-8 py-3"
+            style={{
+              fontFamily: 'var(--font-body)',
+              fontSize: 15,
+              fontWeight: 500,
+              background: nextDisabled ? 'var(--border)' : 'var(--accent)',
+              color: nextDisabled ? 'var(--text-secondary)' : 'white',
+              borderRadius: 'var(--radius-pill)',
+              border: 'none',
+              cursor: nextDisabled ? 'not-allowed' : 'pointer',
+              transition: 'background 0.2s, color 0.2s',
+            }}
+          >
+            {step < 3 ? 'Next →' : 'Generate Movie →'}
+          </motion.button>
+        </div>
+      )}
+
+      {/* ── GENERATING ── */}
+      {phase === 'generating' && (
+        <div className="flex flex-col items-center text-center py-32 px-6">
+          <motion.p
+            animate={{ scale: [1, 1.04, 1] }}
+            transition={{ repeat: Infinity, duration: 2, ease: 'easeInOut' as const }}
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+              fontSize: 36,
+              color: 'var(--accent)',
+            }}
+          >
+            PastPort
+          </motion.p>
+
+          <p
+            className="mt-6"
+            style={{
+              fontFamily: 'var(--font-display)',
+              fontStyle: 'italic',
+              fontSize: 28,
+              color: 'var(--text-primary)',
+            }}
+          >
+            PastPort is creating your movie...
+          </p>
+
+          <div
+            style={{
+              width: '100%',
+              maxWidth: 400,
+              height: 4,
+              background: 'var(--border)',
+              borderRadius: 99,
+              margin: '24px auto',
+              overflow: 'hidden',
+            }}
+          >
+            <motion.div
+              style={{ height: '100%', background: 'var(--accent)', borderRadius: 99 }}
+              initial={{ width: '0%' }}
+              animate={{ width: '100%' }}
+              transition={{ duration: 5, ease: 'easeInOut' as const }}
+            />
+          </div>
+
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={msgIdx}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.3, ease: 'easeOut' as const }}
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 15,
+                color: 'var(--text-secondary)',
+              }}
+            >
+              {GEN_MESSAGES[msgIdx]}
+            </motion.p>
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* ── COMPLETE ── */}
+      {phase === 'complete' && (
+        <div className="py-24 px-6">
+          <div className="max-w-2xl mx-auto">
+            <h1
+              className="mb-8"
+              style={{
+                fontFamily: 'var(--font-display)',
+                fontSize: 'clamp(32px, 4vw, 48px)',
+                color: 'var(--text-primary)',
+                lineHeight: 1.15,
+              }}
+            >
+              Your Movie is Ready
+            </h1>
+
+            {/* Mock video player */}
+            <div
+              style={{
+                position: 'relative',
+                aspectRatio: '16/9',
+                background: '#1A1A1A',
+                borderRadius: 12,
+                overflow: 'hidden',
+              }}
+            >
+              {/* Film grain */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  zIndex: 2,
+                  pointerEvents: 'none',
+                  opacity: 0.06,
+                  backgroundImage: GRAIN_BG,
+                  backgroundSize: '200px 200px',
+                }}
+              />
+
+              {/* Play button */}
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  zIndex: 3,
+                }}
+              >
+                <motion.div
+                  whileHover={{ scale: 1.08 }}
+                  style={{
+                    width: 72,
+                    height: 72,
+                    borderRadius: '50%',
+                    background: 'var(--accent)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Play size={28} color="white" style={{ marginLeft: 4 }} />
+                </motion.div>
+              </div>
+
+              {/* Title overlay */}
+              <div style={{ position: 'absolute', bottom: 20, left: 20, zIndex: 3 }}>
+                <p
+                  style={{
+                    fontFamily: 'var(--font-display)',
+                    fontStyle: 'italic',
+                    fontSize: 24,
+                    color: 'white',
+                    margin: 0,
+                  }}
+                >
+                  Tokyo 2025
+                </p>
+              </div>
+
+              {/* Floating amber dots */}
+              {DOT_X.map((x, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 1, y: 0 }}
+                  animate={{ opacity: 0, y: -120 }}
+                  transition={{
+                    duration: 2 + (i % 3) * 0.5,
+                    delay: i * 0.18,
+                    ease: 'easeOut' as const,
+                  }}
+                  style={{
+                    position: 'absolute',
+                    bottom: 20,
+                    left: `${x}%`,
+                    width: 6,
+                    height: 6,
+                    borderRadius: '50%',
+                    background: 'var(--accent)',
+                    zIndex: 4,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex flex-wrap gap-4 mt-8 justify-center">
+              <motion.button
+                whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(196,134,42,0.35)' }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  padding: '12px 32px',
+                  background: 'var(--accent)',
+                  color: 'white',
+                  borderRadius: 'var(--radius-pill)',
+                  border: 'none',
+                  cursor: 'pointer',
+                }}
+              >
+                Save to Time Capsule
+              </motion.button>
+
+              <motion.button
+                whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(196,134,42,0.15)' }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  padding: '12px 32px',
+                  background: 'transparent',
+                  color: 'var(--accent)',
+                  borderRadius: 'var(--radius-pill)',
+                  border: '1.5px solid var(--accent)',
+                  cursor: 'pointer',
+                }}
+              >
+                Share Movie
+              </motion.button>
+
+              <motion.button
+                whileHover={{ y: -2, boxShadow: '0 4px 16px rgba(196,134,42,0.15)' }}
+                whileTap={{ scale: 0.97 }}
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 14,
+                  fontWeight: 500,
+                  padding: '12px 32px',
+                  background: 'transparent',
+                  color: 'var(--accent)',
+                  borderRadius: 'var(--radius-pill)',
+                  border: '1.5px solid var(--accent)',
+                  cursor: 'pointer',
+                }}
+              >
+                Download
+              </motion.button>
+            </div>
+          </div>
+        </div>
+      )}
+    </PageWrapper>
+  )
+}
