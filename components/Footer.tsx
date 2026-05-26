@@ -5,6 +5,7 @@ export default function Footer() {
     <footer
       className="py-8 text-center"
       style={{
+        background: 'var(--surface)',
         borderTop: '1px solid var(--border)',
         fontFamily: 'var(--font-body)',
         fontSize: '13px',
@@ -13,11 +14,11 @@ export default function Footer() {
     >
       <p className="mb-2">© 2026 PastPort · A travel memory studio</p>
       <p className="mb-3 flex items-center justify-center gap-2">
-        <Link href="/" className="hover:text-[#1A1A1A] transition-colors">About</Link>
+        <Link href="/" className="hover:text-[#F0EBE3] transition-colors">About</Link>
         <span aria-hidden>·</span>
-        <Link href="/pricing" className="hover:text-[#1A1A1A] transition-colors">Pricing</Link>
+        <Link href="/pricing" className="hover:text-[#F0EBE3] transition-colors">Pricing</Link>
         <span aria-hidden>·</span>
-        <Link href="/" className="hover:text-[#1A1A1A] transition-colors">Contact</Link>
+        <Link href="/" className="hover:text-[#F0EBE3] transition-colors">Contact</Link>
       </p>
       <p>Demo photos courtesy of Unsplash</p>
     </footer>

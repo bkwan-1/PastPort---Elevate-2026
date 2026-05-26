@@ -194,8 +194,8 @@ export default function PricingPage() {
                   style={{
                     fontSize: 10,
                     fontWeight: 700,
-                    color: '#16a34a',
-                    background: '#f0fdf4',
+                    color: '#4ade80',
+                    background: 'rgba(74,222,128,0.12)',
                     padding: '1px 6px',
                     borderRadius: 9999,
                     lineHeight: 1.6,
@@ -222,7 +222,7 @@ export default function PricingPage() {
                 style={{
                   transform: plan.featured ? 'scale(1.03)' : 'scale(1)',
                   position: 'relative',
-                  background: plan.featured ? 'rgba(196,134,42,0.04)' : 'white',
+                  background: plan.featured ? 'var(--card)' : 'var(--surface)',
                   border: `1px solid ${plan.featured ? 'var(--accent)' : 'var(--border)'}`,
                   borderLeft: plan.featured ? '3px solid var(--accent)' : undefined,
                   borderRadius: 'var(--radius-card)',

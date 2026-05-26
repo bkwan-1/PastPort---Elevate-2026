@@ -73,7 +73,7 @@ function AvatarStack({ initials }: { initials: string[] }) {
             background: AVATAR_COLORS[i % AVATAR_COLORS.length],
             marginLeft: i > 0 ? -8 : 0,
             zIndex: initials.length - i,
-            border: '2px solid white',
+            border: '2px solid rgba(255,255,255,0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -158,7 +158,7 @@ export default function AlbumsPage() {
                   borderRadius: 'var(--radius-pill)',
                   background: 'transparent',
                 }}
-                onMouseEnter={e => (e.currentTarget.style.background = '#FFF5F5')}
+                onMouseEnter={e => (e.currentTarget.style.background = 'rgba(224,92,92,0.1)')}
                 onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
               >
                 <Lock size={14} />
@@ -178,7 +178,7 @@ export default function AlbumsPage() {
                     fontWeight: 500,
                     padding: '6px 16px',
                     borderRadius: 'var(--radius-pill)',
-                    background: activeTab === tab ? 'var(--accent)' : 'white',
+                    background: activeTab === tab ? 'var(--accent)' : 'transparent',
                     color: activeTab === tab ? 'white' : 'var(--text-secondary)',
                     border: `1.5px solid ${activeTab === tab ? 'var(--accent)' : 'var(--border)'}`,
                     cursor: 'pointer',
@@ -271,7 +271,7 @@ export default function AlbumsPage() {
                 key={trip.name}
                 whileHover={{
                   scale: 1.02,
-                  boxShadow: '0 8px 32px rgba(0,0,0,0.14)',
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
                   borderBottomColor: 'var(--accent)',
                 }}
                 transition={{ duration: 0.2 }}
@@ -281,7 +281,7 @@ export default function AlbumsPage() {
                   border: '1px solid var(--border)',
                   borderBottom: '2px solid transparent',
                   overflow: 'hidden',
-                  background: 'white',
+                  background: 'var(--surface)',
                   cursor: 'pointer',
                   boxShadow: 'var(--shadow-sm)',
                 }}

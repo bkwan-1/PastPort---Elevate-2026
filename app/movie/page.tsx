@@ -47,7 +47,7 @@ function PillButton({
         borderRadius: 'var(--radius-pill)',
         cursor: 'pointer',
         border: `1.5px solid ${active ? 'var(--accent)' : 'var(--border)'}`,
-        background: active ? 'var(--accent)' : 'white',
+        background: active ? 'var(--accent)' : 'transparent',
         color: active ? 'white' : 'var(--text-secondary)',
         transition: 'all 0.15s',
       }}
@@ -148,7 +148,7 @@ export default function MoviePage() {
 
       {/* ── QUESTIONS ── */}
       {phase === 'questions' && (
-        <div className="py-24 px-6 max-w-md mx-auto">
+        <div className="py-24 px-6 max-w-md mx-auto" style={{ background: 'var(--surface)', borderRadius: 14, border: '1px solid var(--border)', marginTop: 24, marginBottom: 24 }}>
           {/* Progress bar */}
           <div
             style={{
@@ -288,7 +288,7 @@ export default function MoviePage() {
               fontFamily: 'var(--font-body)',
               fontSize: 15,
               fontWeight: 500,
-              background: nextDisabled ? 'var(--border)' : 'var(--accent)',
+              background: nextDisabled ? 'var(--card)' : 'var(--accent)',
               color: nextDisabled ? 'var(--text-secondary)' : 'white',
               borderRadius: 'var(--radius-pill)',
               border: 'none',

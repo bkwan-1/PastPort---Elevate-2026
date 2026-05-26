@@ -35,7 +35,7 @@ export default function Nav() {
     <nav
       className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
       style={{
-        background: isScrolledOrOpen ? 'rgba(255,255,255,0.92)' : 'transparent',
+        background: isScrolledOrOpen ? 'rgba(12,12,10,0.92)' : 'transparent',
         backdropFilter: isScrolledOrOpen ? 'blur(12px)' : 'none',
         WebkitBackdropFilter: isScrolledOrOpen ? 'blur(12px)' : 'none',
         borderBottom: `1px solid ${isScrolledOrOpen ? 'var(--border)' : 'transparent'}`,

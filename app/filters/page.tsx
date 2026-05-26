@@ -130,9 +130,9 @@ export default function FiltersPage() {
                     fontWeight: 500,
                     padding: '5px 14px',
                     borderRadius: 'var(--radius-pill)',
-                    background: '#FFFBEB',
-                    color: '#92400E',
-                    border: '1px solid #FDE68A',
+                    background: 'rgba(196,134,42,0.15)',
+                    color: 'var(--accent)',
+                    border: '1px solid rgba(196,134,42,0.3)',
                   }}
                 >
                   ✦ 185 credits remaining
@@ -166,7 +166,7 @@ export default function FiltersPage() {
                     borderRadius: 12,
                     padding: 12,
                     color: 'var(--text-primary)',
-                    background: 'white',
+                    background: 'var(--surface)',
                     resize: 'none',
                     outline: 'none',
                   }}
@@ -211,7 +211,7 @@ export default function FiltersPage() {
                     alignItems: 'center',
                     gap: 8,
                     cursor: 'pointer',
-                    background: 'white',
+                    background: 'var(--surface)',
                   }}
                 >
                   <ImagePlus size={24} color="var(--accent)" />
@@ -268,7 +268,7 @@ export default function FiltersPage() {
                             sizes="150px"
                           />
                         </div>
-                        <div style={{ padding: '6px 8px', background: 'white' }}>
+                        <div style={{ padding: '6px 8px', background: 'var(--surface)' }}>
                           <p
                             style={{
                               fontFamily: 'var(--font-body)',
