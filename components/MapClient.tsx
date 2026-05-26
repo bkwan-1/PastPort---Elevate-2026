@@ -14,6 +14,11 @@ interface Trip {
   contributors: number
 }
 
+interface MapClientProps {
+  showFilter?: boolean
+  darkMode?: boolean
+}
+
 const trips: Trip[] = [
   { name: 'Tokyo 2025',          pos: [35.6762, 139.6503],  year: 2025, photos: 284, contributors: 4 },
   { name: 'World Cup Vancouver', pos: [49.2827, -123.1207], year: 2026, photos: 127, contributors: 6 },
@@ -25,13 +30,13 @@ const trips: Trip[] = [
 
 const YEARS = ['All', '2024', '2025', '2026']
 
-export default function MapClient() {
+export default function MapClient({ showFilter = true, darkMode = false }: MapClientProps) {
   const [activeYear, setActiveYear] = useState('All')
 
   const markerIcon = useMemo(() => {
     if (typeof window === 'undefined') return undefined
     return L.divIcon({
-      html: `<div style="width:20px;height:20px;border-radius:50%;background:#C4862A;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(196,134,42,0.5)"><div style="width:6px;height:6px;border-radius:50%;background:white;"></div></div>`,
+      html: `<div style="width:20px;height:20px;border-radius:50%;background:#C4862A;display:flex;align-items:center;justify-content:center;box-shadow:0 0 12px rgba(196,134,42,0.6),0 2px 8px rgba(196,134,42,0.5)"><div style="width:6px;height:6px;border-radius:50%;background:white;"></div></div>`,
       className: '',
       iconSize: [20, 20] as [number, number],
       iconAnchor: [10, 10] as [number, number],
@@ -69,31 +74,33 @@ export default function MapClient() {
 
       <div style={{ position: 'relative', marginTop: 64 }}>
         {/* Year filter bar */}
-        <div
-          className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] shadow-md rounded-full px-2 py-1 flex gap-1"
-          style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
-        >
-          {YEARS.map(y => (
-            <button
-              key={y}
-              onClick={() => setActiveYear(y)}
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: 13,
-                fontWeight: 500,
-                padding: '6px 16px',
-                borderRadius: 9999,
-                border: 'none',
-                cursor: 'pointer',
-                background: activeYear === y ? '#C4862A' : 'transparent',
-                color: activeYear === y ? 'white' : '#4A5568',
-                transition: 'all 0.15s',
-              }}
-            >
-              {y}
-            </button>
-          ))}
-        </div>
+        {showFilter && (
+          <div
+            className="absolute top-4 left-1/2 -translate-x-1/2 z-[1000] shadow-md rounded-full px-2 py-1 flex gap-1"
+            style={{ background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)' }}
+          >
+            {YEARS.map(y => (
+              <button
+                key={y}
+                onClick={() => setActiveYear(y)}
+                style={{
+                  fontFamily: 'var(--font-body)',
+                  fontSize: 13,
+                  fontWeight: 500,
+                  padding: '6px 16px',
+                  borderRadius: 9999,
+                  border: 'none',
+                  cursor: 'pointer',
+                  background: activeYear === y ? '#C4862A' : 'transparent',
+                  color: activeYear === y ? 'white' : '#4A5568',
+                  transition: 'all 0.15s',
+                }}
+              >
+                {y}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Map */}
         <MapContainer
@@ -103,7 +110,9 @@ export default function MapClient() {
           zoomControl={false}
         >
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            url={darkMode
+              ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+              : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'}
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
           {filtered.map(trip => (
